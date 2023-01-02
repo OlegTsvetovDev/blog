@@ -9,6 +9,13 @@ import { selectAllPosts } from './postsSlice'
 const PostsList = () => {
     const posts = useSelector(selectAllPosts)
 
+    console.log(posts)
+
+    if (posts.length === 0)
+        return (
+            <p>Loading</p>
+        )
+
     const renderedPosts = posts.map(
         (post) => (
             <article key={post.id}>
