@@ -2,8 +2,8 @@ import { createSlice, nanoid } from '@reduxjs/toolkit'
 
 
 const initialState = [
-    { id: 1, title: 'Learning Redux Toolkit', content: 'The Redux Toolkit package is intended to be the standard way to write Redux logic. It was originally created to help address three common concerns about Redux' },
-    { id: 2, title: 'Learning React', content: 'What is React used for? It\'s used for building interactive user interfaces and web applications quickly and efficiently with significantly less code than you would with vanilla JavaScript' }
+    { id: 1, title: 'Learning Redux Toolkit', content: 'The Redux Toolkit package is intended to be the standard way to write Redux logic. It was originally created to help address three common concerns about Redux', userId: 1 },
+    { id: 2, title: 'Learning React', content: 'What is React used for? It\'s used for building interactive user interfaces and web applications quickly and efficiently with significantly less code than you would with vanilla JavaScript', userId: 1 }
 ]
 
 const postsSlice = createSlice({

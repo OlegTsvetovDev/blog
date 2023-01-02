@@ -5,8 +5,6 @@ import { addPost } from './postsSlice'
 import { selectAllUsers } from '../users/usersSlice'
 
 
-
-
 function AddPostForm() {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
@@ -25,11 +23,11 @@ function AddPostForm() {
             return new Error('Post should have author, title and content')            
         }
 
-        console.log(title)
-
         dispatch(
             addPost(title, content, userId)
         )
+        setTitle('')
+        setContent('')
     }
 
     const userOptions = users.map((user) => (
