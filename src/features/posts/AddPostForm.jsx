@@ -8,7 +8,7 @@ import { selectAllUsers } from '../users/usersSlice'
 function AddPostForm() {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
-    const [userId, setUserId] = useState(1)
+    const [userId, setUserId] = useState(0)
     const dispatch = useDispatch()
     const users = useSelector(selectAllUsers)
 
