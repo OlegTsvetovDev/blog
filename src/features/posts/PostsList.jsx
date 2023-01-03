@@ -13,7 +13,7 @@ const PostsList = () => {
 
     if (posts.length === 0)
         return (
-            <p>Loading</p>
+            <p>No posts</p>
         )
 
     const orderedPosts = posts.slice().sort(
