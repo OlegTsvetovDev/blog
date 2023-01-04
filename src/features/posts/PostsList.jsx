@@ -1,45 +1,50 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import AddPostForm from './AddPostForm'
-import PostAuthor from './PostAuthor'
-import { addReaction, selectAllPosts } from './postsSlice'
-import ReactionButtons from './ReactionButtons'
-import TimeAgo from './TimeAgo'
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+
+import { selectAllPosts, selectPostsError, selectPostsStatus, fetchPosts } from './postsSlice'
+// import AddPostForm from './AddPostForm'
+import PostsExcerpt from './PostsExcerpt'
 
 
 
 const PostsList = () => {
+    const dispatch = useDispatch()
     const posts = useSelector(selectAllPosts)
+    const postsError = useSelector(selectPostsError)
+    const postsStatus = useSelector(selectPostsStatus)
+    console.log(postsStatus);
 
-    if (posts.length === 0)
-        return (
-            <p>No posts</p>
-        )
+    useEffect(() => {
+        if (postsStatus === 'idle')
+            dispatch(fetchPosts())
+    }, [dispatch, postsStatus])
 
-    const orderedPosts = posts.slice().sort(
-        (a, b) => b.date.localeCompare(a.date)
-    )
+    let content
+    switch (postsStatus) {
+        case 'loading': {
+            content = <p>Loading</p>
+            break
+        }
+        case 'failed': {
+            content = <p>{postsError}</p>
+            break
+        }            
+        default: {
+            const ordredPosts = posts.slice().sort(
+                (a, b) => b.date.localeCompare(a.date)
+            )
 
-    const renderedPosts = orderedPosts.map(
-        (post) => (
-            <article key={post.id}>
-                <h3>{post?.title}</h3>
-                <p>{post?.content.substring(0, 100)}</p>
-                <p className="postCredit">
-                    <PostAuthor userId={post.userId} />
-                    <TimeAgo timestamp={post.date} />
-                </p>
-                <ReactionButtons post={post} />
-            </article>
-        )
-    )
-   
+            content = ordredPosts.map(
+                (post) => <PostsExcerpt key={post.id} post={post} />
+            )
+        }
+    }
 
     return (
         <section>
             <h2>Posts</h2>
-            {renderedPosts}            
-            <AddPostForm />
+            {/* <AddPostForm /> */}
+            {content}      
         </section>
     )
 }

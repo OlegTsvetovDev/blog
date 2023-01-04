@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 
+const USERS_URL = 'https://jsonplaceholder.typicode.com/users'
+
 const initialState = [
     { id: 1, name: 'Dude Lebovski' },
     { id: 2, name: 'Neil Yang' },
