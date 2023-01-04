@@ -1,4 +1,5 @@
-import { createSlice, nanoid } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, nanoid } from '@reduxjs/toolkit'
+import axios from 'axios'
 import { sub } from 'date-fns'
 
 
@@ -38,6 +39,15 @@ const initialState = {
     status: 'idle', // 'idle', 'loading', 'succeeded', 'failed'
     error: null
 }
+
+const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
+    try {
+        const response = await axios.get(POSTS_URL)
+        return response.data
+    } catch (err) {
+        return err.message
+    }
+})
 
 const postsSlice = createSlice({
     name: 'posts',
@@ -86,6 +96,38 @@ const postsSlice = createSlice({
                     : post
             )
         }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchPosts.pending, (state, action) => {
+                state.status = 'loading'
+            })
+            .addCase(fetchPosts.fulfilled, (state, action) => {
+                state.status = 'succeeded'
+                let minutes = 1
+                const loadedPosts = action.payload.map((post) => {
+                    post.date = sub(
+                        new Date(),
+                        { minutes: minutes++ }
+                    ).toISOString()
+
+                    post.reactions = {
+                        thumbsUp: 0,
+                        wow: 0,
+                        heart: 0,
+                        rocket: 0,
+                        coffee: 0
+                    }
+
+                    return post
+                })
+
+                state.posts.concat(loadedPosts)
+            })
+            .addCase(fetchPosts.rejected, (state, action) => {
+                state.status = 'failed'
+                state.error = action.error.message
+            })
     }
 })
 
@@ -94,6 +136,10 @@ const selectAllPosts = (state) => state.posts.posts
 
 export {
     selectAllPosts,
+}
+
+export {
+    fetchPosts,
 }
 
 export const {
