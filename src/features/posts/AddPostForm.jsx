@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { addPost } from './postsSlice'
+import { addNewPost } from './postsSlice'
 import { selectAllUsers } from '../users/usersSlice'
+import { connect } from 'react-redux'
 
 
 function AddPostForm() {
@@ -11,23 +12,34 @@ function AddPostForm() {
     const [userId, setUserId] = useState(0)
     const dispatch = useDispatch()
     const users = useSelector(selectAllUsers)
+    const [addRequestStatus, setAddRequestStatus] = useState('idle')
+
 
     const canSave = Boolean(title)
         && Boolean(content)
         && Boolean(userId)
+        && addRequestStatus === 'idle'
 
-    const handleClick = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        if (!canSave) {
-            return new Error('Post should have author, title and content')            
+    const handleSavePost = (e) => {
+        if (canSave) {
+            try {
+                setAddRequestStatus('pending')
+                dispatch(
+                    addNewPost({
+                        title,
+                        body: content,
+                        userId
+                    })
+                ).unwrap()
+                setTitle('')
+                setContent('')
+                setUserId('')
+            } catch (err) {
+                console.log('Failed to save the post: ', err)
+            } finally {
+                setAddRequestStatus('idle')
+            }
         }
-
-        dispatch(
-            addPost(title, content, userId)
-        )
-        setTitle('')
-        setContent('')
     }
 
     const userOptions = users.map((user) => (
@@ -63,7 +75,7 @@ function AddPostForm() {
                     onChange={(e) => setContent(e.target.value)}
                 />
                 <button
-                    onClick={handleClick}
+                    onClick={handleSavePost}
                     disabled={!canSave}
                 >
                     Add Post

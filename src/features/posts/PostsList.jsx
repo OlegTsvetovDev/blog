@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { selectAllPosts, selectPostsError, selectPostsStatus, fetchPosts } from './postsSlice'
-// import AddPostForm from './AddPostForm'
+import AddPostForm from './AddPostForm'
 import PostsExcerpt from './PostsExcerpt'
 
 
@@ -12,7 +12,6 @@ const PostsList = () => {
     const posts = useSelector(selectAllPosts)
     const postsError = useSelector(selectPostsError)
     const postsStatus = useSelector(selectPostsStatus)
-    console.log(postsStatus);
 
     useEffect(() => {
         if (postsStatus === 'idle')
@@ -43,7 +42,7 @@ const PostsList = () => {
     return (
         <section>
             <h2>Posts</h2>
-            {/* <AddPostForm /> */}
+            <AddPostForm />
             {content}      
         </section>
     )
