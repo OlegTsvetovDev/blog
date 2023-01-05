@@ -26,8 +26,14 @@ const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPost) => {
 const updatePost = createAsyncThunk('posts/updatePost', async (initialPost) => {
     const { postId } = initialPost
 
-    const response = await axios.put(`${POSTS_URL}/${postId}`, initialPost)
-    return response.data
+    try {
+        const response = await axios.put(`${POSTS_URL}/${postId}`, initialPost)
+        return response.data 
+    } catch (err) {
+        console.log('Post not existing on server')
+        console.log(err)
+        return initialPost
+    }    
 })
 
 const deletePost = createAsyncThunk('posts/deletePost', async (initialPost) => {
@@ -133,17 +139,19 @@ const postsSlice = createSlice({
                 state.posts.push(action.payload)
             })
             .addCase(updatePost.fulfilled, (state, action) => {
-                if (!action.payload?.id) {
+                if (!action.payload?.postId) {
                     console.log('Update could not be completed')
-                    console.log(action.payload)
-                    return
+                    console.log(action.payload)         
+                    return 
                 }
 
-                const { id } = action.payload
+                const { postId } = action.payload
+                action.payload.id = Number(postId)
                 action.payload.date = new Date().toISOString()
                 const posts = state.posts.filter(
-                    (post) => post.id !== id
+                    (post) => post.id !== Number(postId)
                 )
+
                 state.posts = [...posts, action.payload]
             })
             .addCase(deletePost.fulfilled, (state, action) => {
