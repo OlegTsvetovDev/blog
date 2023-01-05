@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { addNewPost } from './postsSlice'
 import { selectAllUsers } from '../users/usersSlice'
-import { connect } from 'react-redux'
 
 
 function AddPostForm() {
@@ -49,7 +48,7 @@ function AddPostForm() {
     ))
 
     return (
-        <section className="posts__container">
+        <section>
             <h3>Create a new post</h3>            
             <form>
                 <label htmlFor="postUser"></label>

@@ -141,7 +141,7 @@ const postsSlice = createSlice({
                     rocket: 0,
                     coffee: 0
                 }
-                // console.log(action.payload)
+
                 state.posts.push(action.payload)
             })
     }
@@ -150,12 +150,15 @@ const postsSlice = createSlice({
 const selectAllPosts = (state) => state.posts.posts
 const selectPostsStatus = (state) => state.posts.status
 const selectPostsError = (state) => state.posts.error
+const selectedPostById = (state, postId) =>
+    state.posts.posts.find((post) => postId === post.id)
 
 
 export {
     selectAllPosts,
     selectPostsStatus,
     selectPostsError,
+    selectedPostById,
 }
 
 export {
