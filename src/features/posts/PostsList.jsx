@@ -1,22 +1,16 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 
-import { selectAllPosts, selectPostsError, selectPostsStatus, fetchPosts } from './postsSlice'
-import AddPostForm from './AddPostForm'
+import { selectAllPosts, selectPostsError, selectPostsStatus } from './postsSlice'
 import PostsExcerpt from './PostsExcerpt'
 
 
 
 const PostsList = () => {
-    const dispatch = useDispatch()
     const posts = useSelector(selectAllPosts)
     const postsError = useSelector(selectPostsError)
     const postsStatus = useSelector(selectPostsStatus)
 
-    useEffect(() => {
-        if (postsStatus === 'idle')
-            dispatch(fetchPosts())
-    }, [dispatch, postsStatus])
 
     let content
     switch (postsStatus) {
