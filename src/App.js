@@ -13,13 +13,10 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<PostsList />} />
-        <Route path="post">
+        <Route path="posts">
           <Route index element={<AddPostForm />} />
           <Route path=":postId" element={<SinglePostPage />} />
-          <Route path="edit">
-            
-            <Route path=":postId" element={<EditPostForm />} />
-          </Route>
+          <Route path="edit/:postId" element={<EditPostForm />} />
         </Route>
         <Route path="*" element={<PageError />} />
       </Route>

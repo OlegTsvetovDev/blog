@@ -3,7 +3,9 @@ import React from 'react'
 
 const PageError = () => {
   return (
-    <div>No page found</div>
+    <div>
+      <h1>Page not found</h1>
+    </div>
   )
 }
 

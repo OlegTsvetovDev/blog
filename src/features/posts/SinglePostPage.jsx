@@ -25,7 +25,7 @@ const SinglePostPage = () => {
             <h3>{post?.title}</h3>
             <p>{post?.body?.substring(0, 100)}</p>
             <p className="postCredit">
-                <Link to={`/post/edit/${postId}`}>Edit</Link>
+                <Link to={`/posts/edit/${post.id}`}>Edit post</Link>
                 <PostAuthor userId={post?.userId} />
                 <TimeAgo timestamp={post?.date} />
             </p>

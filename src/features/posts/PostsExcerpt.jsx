@@ -12,7 +12,7 @@ const PostsExcerpt = ({ post }) => {
         <h3>{post?.title}</h3>
         <p className="exrept">{post?.body?.substring(0, 75)}...</p>
         <p className="postCredit">
-            <Link to={`post/${post.id}`}>View all</Link>
+            <Link to={`posts/${post.id}`}>View full post</Link>
             <PostAuthor userId={post.userId} />
             <TimeAgo timestamp={post.date} />
         </p>

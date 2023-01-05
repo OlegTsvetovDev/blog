@@ -3,35 +3,6 @@ import axios from 'axios'
 import { sub } from 'date-fns'
 
 
-// const initialState = [
-//     {
-//         id: 1,
-//         title: 'Learning Redux Toolkit',
-//         content: 'The Redux Toolkit package is intended to be the standard way to write Redux logic. It was originally created to help address three common concerns about Redux',
-//         date: sub(new Date(), { minutes: 10 }).toISOString(),
-//         reactions: {
-//             thumbsUp: 0,
-//             wow: 0,
-//             heart: 0,
-//             rocket: 0,
-//             coffee: 0
-//         }
-//     },
-//     {
-//         id: 2,
-//         title: 'Learning React',
-//         content: 'What is React used for? It\'s used for building interactive user interfaces and web applications quickly and efficiently with significantly less code than you would with vanilla JavaScript',
-//         date: sub(new Date(), { minutes: 5 }).toISOString(),
-//         reactions: {
-//             thumbsUp: 0,
-//             wow: 0,
-//             heart: 1,
-//             rocket: 0,
-//             coffee: 0
-//         }
-//     }
-// ]
-
 const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts'
 
 const initialState = {
@@ -49,6 +20,13 @@ const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
 const addNewPost = createAsyncThunk('posts/addNewPost', async (initialPost) => {
     const response = await axios.post(POSTS_URL, initialPost)
 
+    return response.data
+})
+
+const updatePost = createAsyncThunk('posts/updatePost', async (initialPost) => {
+    const { postId } = initialPost
+
+    const response = await axios.put(`${POSTS_URL}/${postId}`, initialPost)
     return response.data
 })
 
@@ -105,6 +83,10 @@ const postsSlice = createSlice({
             .addCase(fetchPosts.pending, (state) => {
                 state.status = 'loading'
             })
+            .addCase(fetchPosts.rejected, (state, action) => {
+                state.status = 'failed'
+                state.error = action.error.message
+            })
             .addCase(fetchPosts.fulfilled, (state, action) => {
                 state.status = 'succeeded'
                 let minutes = 1
@@ -127,10 +109,6 @@ const postsSlice = createSlice({
 
                 state.posts = state.posts.concat(loadedPosts)
             })
-            .addCase(fetchPosts.rejected, (state, action) => {
-                state.status = 'failed'
-                state.error = action.error.message
-            })
             .addCase(addNewPost.fulfilled, (state, action) => {
                 action.payload.userId = Number(action.payload.userId)
                 action.payload.data = new Date().toISOString()
@@ -143,6 +121,20 @@ const postsSlice = createSlice({
                 }
 
                 state.posts.push(action.payload)
+            })
+            .addCase(updatePost.fulfilled, (state, action) => {
+                if (!action.payload?.id) {
+                    console.log('Update could not be complete')
+                    console.log(action.payload)
+                    return
+                }
+
+                const { id } = action.payload
+                action.payload.date = new Date().toISOString()
+                const posts = state.posts.filter(
+                    (post) => post.id !== id
+                )
+                state.posts = [...posts, action.payload]
             })
     }
 })
@@ -164,6 +156,7 @@ export {
 export {
     fetchPosts,
     addNewPost,
+    updatePost,
 }
 
 export const {
