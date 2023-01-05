@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { selectAllUsers } from '../users/usersSlice'
-import { selectedPostById, updatePost } from './postsSlice'
+import { deletePost, selectedPostById, updatePost } from './postsSlice'
 
 
 const EditPostForm = () => {
@@ -61,6 +61,30 @@ const EditPostForm = () => {
     }
   }
 
+  const handleDeletePost = (e) => {
+    try {
+      setAddRequestStatus('pending')
+      dispatch(   
+        deletePost({
+          postId,
+          title,
+          body: content,
+          userId,
+          reactions: post.reactions
+        })
+      ).unwrap()
+      
+      setTitle('')
+      setContent('')
+      setUserId('')
+      navigate('/')
+    } catch (err) {
+      console.log('Failed to update the post: ', err)
+    } finally {
+      setAddRequestStatus('idle')
+    }
+  }
+
   const usersOptions = users.map(
     (user) => (
       <option
@@ -106,6 +130,11 @@ const EditPostForm = () => {
           disabled={!canUpdate}
         >
           Update post
+        </button>
+        <button
+          onClick={handleDeletePost}
+        >
+          Delete post
         </button>
       </form>
     </section>
