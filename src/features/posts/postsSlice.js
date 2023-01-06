@@ -174,15 +174,22 @@ const postsSlice = createSlice({
 const selectAllPosts = (state) => state.posts.posts
 const selectPostsStatus = (state) => state.posts.status
 const selectPostsError = (state) => state.posts.error
-const selectedPostById = (state, postId) =>
-    state.posts.posts.find((post) => postId === post.id)
+const selectPostById = (state, postId) =>
+    state.posts.posts.find(
+        (post) => postId === post.id
+    )
+const selectUserById = (state, userId) =>
+    state.users.find(
+        (user) => user.id === userId
+    )
 
 
 export {
     selectAllPosts,
     selectPostsStatus,
     selectPostsError,
-    selectedPostById,
+    selectPostById,
+    selectUserById,
 }
 
 export {

@@ -3,14 +3,14 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { selectAllUsers } from '../users/usersSlice'
-import { deletePost, selectedPostById, updatePost } from './postsSlice'
+import { deletePost, selectPostById, updatePost } from './postsSlice'
 
 
 const EditPostForm = () => {
   const { postId } = useParams()
   const navigate = useNavigate()
   const post = useSelector(
-    (state) => selectedPostById(state, Number(postId))
+    (state) => selectPostById(state, Number(postId))
   )
   const users = useSelector(selectAllUsers)
   const [ title, setTitle ] = useState(post?.title)
@@ -27,7 +27,7 @@ const EditPostForm = () => {
 
   const handleTitleChange = (e) => setTitle(e.target.value)
   const handleContentChange = (e) => setContent(e.target.value)
-  const handleAuthorChange = (e) => setUserId(e.target.value)
+  const handleAuthorChange = (e) => setUserId(Number(e.target.value))
 
   const canUpdate = Boolean(title)
     && Boolean(content)

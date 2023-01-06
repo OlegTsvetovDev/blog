@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 
-import { selectedPostById } from './postsSlice'
+import { selectPostById } from './postsSlice'
 import PostAuthor from './PostAuthor'
 import ReactionButtons from './ReactionButtons'
 import TimeAgo from './TimeAgo'
@@ -11,7 +11,7 @@ import TimeAgo from './TimeAgo'
 const SinglePostPage = () => {
     const { postId } = useParams()
     const post = useSelector(
-        (state) => selectedPostById(state, Number(postId))
+        (state) => selectPostById(state, Number(postId))
     )    
 
     if (!post) return (
