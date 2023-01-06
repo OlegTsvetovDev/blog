@@ -15,7 +15,6 @@ function AddPostForm() {
     const [addRequestStatus, setAddRequestStatus] = useState('idle')
     const navigate = useNavigate()
 
-
     const canSave = Boolean(title)
         && Boolean(content)
         && Boolean(userId)

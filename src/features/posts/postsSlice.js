@@ -180,7 +180,7 @@ const selectPostById = (state, postId) =>
     )
 const selectUserById = (state, userId) =>
     state.users.find(
-        (user) => user.id === userId
+        (user) => Number(user.id) === Number(userId)        
     )
 
 
