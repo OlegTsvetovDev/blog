@@ -163,7 +163,7 @@ export {
     selectPostsStatus,
     selectPostsError,
     selectUserById,
-    selectCount,
+    // selectCount,
     selectPostsByUser,
 }
 

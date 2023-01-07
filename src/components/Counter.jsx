@@ -1,11 +1,14 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { increaseCount, selectCount } from '../features/posts/postsSlice'
+import {
+  increaseCount,
+  //  selectCount
+} from '../features/posts/postsSlice'
 
 
 const Counter = () => {
   const dispatch = useDispatch()
-  const counterValue = useSelector(selectCount)
+  // const counterValue = useSelector(selectCount)
   
   const handleClick = () => {
     dispatch(increaseCount())
@@ -15,7 +18,7 @@ const Counter = () => {
     <button
         onClick={handleClick}
     >
-        {counterValue}
+        {/* {counterValue} */}
     </button>
   )
 }
