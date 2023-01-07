@@ -62,9 +62,9 @@ const postsSlice = createSlice({
             
             existingPost.reactions[reaction]++            
         },
-        increaseCount: (state, action) => {
-            state.count = state.count + 1
-        }
+        // increaseCount: (state, action) => {
+        //     state.count = state.count + 1
+        // }
     },
     extraReducers: (builder) => {
         builder
@@ -120,11 +120,7 @@ const postsSlice = createSlice({
                 const { postId } = action.payload
                 action.payload.id = Number(postId)
                 action.payload.date = new Date().toISOString()
-                // const posts = state.posts.filter(
-                //     (post) => post.id !== Number(postId)
-                // )
 
-                // state.posts = [...posts, action.payload]
                 postsAdapter.upsertOne(state, action.payload)
             })
             .addCase(deletePost.fulfilled, (state, action) => {
@@ -134,11 +130,6 @@ const postsSlice = createSlice({
                     return
                 }
 
-                // const { id } = action.payload
-                // const posts = state.posts.filter(
-                //     (post) => post.id !== id
-                // )
-                // state.posts = posts
                 postsAdapter.removeOne(state, action.payload.id)
             })
     }
@@ -152,18 +143,13 @@ export const {
         (state) => state.posts
     )
 
-// const selectAllPosts = (state) => state.posts.posts
 const selectPostsStatus = (state) => state.posts.status
 const selectPostsError = (state) => state.posts.error
-// const selectPostById = (state, postId) =>
-//     state.posts.posts.find(
-//         (post) => postId === post.id
-//     )
 const selectUserById = (state, userId) =>
     state.users.find(
         (user) => Number(user.id) === Number(userId)        
     )
-const selectCount = (state) => state.posts.count
+// const selectCount = (state) => state.posts.count
 
 const selectPostsByUser = createSelector(
     [selectAllPosts, (state, userId) => userId],
@@ -174,10 +160,8 @@ const selectPostsByUser = createSelector(
 
 
 export {
-    // selectAllPosts,
     selectPostsStatus,
     selectPostsError,
-    // selectPostById,
     selectUserById,
     selectCount,
     selectPostsByUser,
