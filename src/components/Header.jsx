@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import Counter from './Counter'
 
 
 const Header = () => {
@@ -17,6 +18,7 @@ const Header = () => {
           <li>
             <Link to="/users">Users</Link>
           </li>
+          <Counter />
         </ul>
       </nav>
     </header>

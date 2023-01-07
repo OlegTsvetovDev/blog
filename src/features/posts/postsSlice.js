@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, nanoid } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { sub } from 'date-fns'
 
@@ -8,7 +8,8 @@ const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts'
 const initialState = {
     posts: [],
     status: 'idle', // 'idle', 'loading', 'succeeded', 'failed'
-    error: null
+    error: null,
+    count: 0,
 }
 
 const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
@@ -50,27 +51,6 @@ const postsSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {
-        addPost: {
-            prepare: (title, content, userId) => ({
-                payload: {
-                    id: nanoid(),
-                    title: title,
-                    content: content,
-                    userId: userId,
-                    date: new Date().toISOString(),
-                    reactions: {
-                        thumbsUp: 0,
-                        wow: 0,
-                        heart: 0,
-                        rocket: 0,
-                        coffee: 0
-                    }
-                }
-            }),
-            reducer: (state, action) => {
-                state.posts.push(action.payload)
-            },
-        },
         addReaction: (state, action) => {
             const { postId, reaction } = action.payload
             const existingPost = state.posts.find(
@@ -81,17 +61,8 @@ const postsSlice = createSlice({
             
             existingPost.reactions[reaction]++            
         },
-        removePost: (state, action) => {
-            state = state.posts.filter(
-                (post) => post.id !== action.payload
-            )
-        },
-        editPost: (state, action) => {             
-            state = state.posts.map(
-                (post) => post.id = action.payload.id
-                    ? action.payload
-                    : post
-            )
+        increaseCount: (state, action) => {
+            state.count = state.count + 1
         }
     },
     extraReducers: (builder) => {
@@ -182,6 +153,14 @@ const selectUserById = (state, userId) =>
     state.users.find(
         (user) => Number(user.id) === Number(userId)        
     )
+const selectCount = (state) => state.posts.count
+
+const selectPostsByUser = createSelector(
+    [selectAllPosts, (state, userId) => userId],
+    (posts, userId) => posts.filter(
+        (post) => post.userId === userId
+    )
+)
 
 
 export {
@@ -190,6 +169,8 @@ export {
     selectPostsError,
     selectPostById,
     selectUserById,
+    selectCount,
+    selectPostsByUser,
 }
 
 export {
@@ -200,10 +181,8 @@ export {
 }
 
 export const {
-    addPost,
     addReaction,    
-    removePost,
-    editPost,
+    increaseCount,
 } = postsSlice.actions
 
 export default postsSlice.reducer

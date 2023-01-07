@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useParams, Link } from 'react-router-dom'
 
-import { selectAllPosts, selectUserById } from '../posts/postsSlice'
+import { selectAllPosts, selectPostsByUser, selectUserById } from '../posts/postsSlice'
 
 
 const UserPage = () => {
@@ -12,15 +12,8 @@ const UserPage = () => {
   )
   
   const postsForUser = useSelector(
-    (state) => {
-      const posts = selectAllPosts(state)
-      
-      return posts.filter(
-        (post) => Number(post.userId) === Number(userId)
-      )
-    }
-  )
-      
+    (state) => selectPostsByUser(state, Number(userId))
+  )      
   
   if (!user) return (
     <section>
