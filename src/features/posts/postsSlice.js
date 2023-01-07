@@ -1,16 +1,19 @@
-import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createEntityAdapter, createSelector, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { sub } from 'date-fns'
 
 
 const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts'
 
-const initialState = {
-    posts: [],
+const postsAdapter = createEntityAdapter({
+    sortComparer: (a, b) => b.date.localeCompare(a.date)
+})
+
+const initialState = postsAdapter.getInitialState({
     status: 'idle', // 'idle', 'loading', 'succeeded', 'failed'
     error: null,
     count: 0,
-}
+})
 
 const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
     const response = await axios.get(POSTS_URL)
@@ -53,9 +56,7 @@ const postsSlice = createSlice({
     reducers: {
         addReaction: (state, action) => {
             const { postId, reaction } = action.payload
-            const existingPost = state.posts.find(
-                (post) => post.id === postId
-            )
+            const existingPost = state.entities[postId]
             if (!existingPost)
                 return new Error(`No post found with ID: ${postId}`)
             
@@ -94,7 +95,7 @@ const postsSlice = createSlice({
                     return post
                 })
 
-                state.posts = state.posts.concat(loadedPosts)
+                postsAdapter.upsertMany(state, loadedPosts)
             })
             .addCase(addNewPost.fulfilled, (state, action) => {
                 action.payload.userId = Number(action.payload.userId)
@@ -107,7 +108,7 @@ const postsSlice = createSlice({
                     coffee: 0
                 }
 
-                state.posts.push(action.payload)
+                postsAdapter.addOne(state, action.payload)
             })
             .addCase(updatePost.fulfilled, (state, action) => {
                 if (!action.payload?.postId) {
@@ -119,11 +120,12 @@ const postsSlice = createSlice({
                 const { postId } = action.payload
                 action.payload.id = Number(postId)
                 action.payload.date = new Date().toISOString()
-                const posts = state.posts.filter(
-                    (post) => post.id !== Number(postId)
-                )
+                // const posts = state.posts.filter(
+                //     (post) => post.id !== Number(postId)
+                // )
 
-                state.posts = [...posts, action.payload]
+                // state.posts = [...posts, action.payload]
+                postsAdapter.upsertOne(state, action.payload)
             })
             .addCase(deletePost.fulfilled, (state, action) => {
                 if (!action.payload?.id) {
@@ -132,23 +134,31 @@ const postsSlice = createSlice({
                     return
                 }
 
-                const { id } = action.payload
-                action.payload.date = new Date().toISOString()
-                const posts = state.posts.filter(
-                    (post) => post.id !== id
-                )
-                state.posts = posts
+                // const { id } = action.payload
+                // const posts = state.posts.filter(
+                //     (post) => post.id !== id
+                // )
+                // state.posts = posts
+                postsAdapter.removeOne(state, action.payload.id)
             })
     }
 })
 
-const selectAllPosts = (state) => state.posts.posts
+export const {
+    selectAll: selectAllPosts,
+    selectById: selectPostById,
+    selectIds: selectPostIds
+} = postsAdapter.getSelectors(
+        (state) => state.posts
+    )
+
+// const selectAllPosts = (state) => state.posts.posts
 const selectPostsStatus = (state) => state.posts.status
 const selectPostsError = (state) => state.posts.error
-const selectPostById = (state, postId) =>
-    state.posts.posts.find(
-        (post) => postId === post.id
-    )
+// const selectPostById = (state, postId) =>
+//     state.posts.posts.find(
+//         (post) => postId === post.id
+//     )
 const selectUserById = (state, userId) =>
     state.users.find(
         (user) => Number(user.id) === Number(userId)        
@@ -164,10 +174,10 @@ const selectPostsByUser = createSelector(
 
 
 export {
-    selectAllPosts,
+    // selectAllPosts,
     selectPostsStatus,
     selectPostsError,
-    selectPostById,
+    // selectPostById,
     selectUserById,
     selectCount,
     selectPostsByUser,

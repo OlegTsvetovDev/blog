@@ -18,7 +18,7 @@ const Header = () => {
           <li>
             <Link to="/users">Users</Link>
           </li>
-          <Counter />
+          {/* <Counter /> */}
         </ul>
       </nav>
     </header>

@@ -1,13 +1,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import { selectAllPosts, selectPostsError, selectPostsStatus } from './postsSlice'
+import { selectPostIds, selectPostsError, selectPostsStatus } from './postsSlice'
 import PostsExcerpt from './PostsExcerpt'
 
 
 
 const PostsList = () => {
-    const posts = useSelector(selectAllPosts)
+    const orderedPostsIds = useSelector(selectPostIds)
     const postsError = useSelector(selectPostsError)
     const postsStatus = useSelector(selectPostsStatus)
 
@@ -23,12 +23,12 @@ const PostsList = () => {
             break
         }            
         default: {
-            const ordredPosts = posts.slice().sort(
-                (a, b) => b.date.localeCompare(a.date)
-            )
+            // const ordredPosts = posts.slice().sort(
+            //     (a, b) => b.date.localeCompare(a.date)
+            // )
 
-            content = ordredPosts.map(
-                (post) => <PostsExcerpt key={post.id} post={post} />
+            content = orderedPostsIds.map(
+                (id) => <PostsExcerpt key={id} postId={id} />
             )
         }
     }
